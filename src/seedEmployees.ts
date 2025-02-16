@@ -23,6 +23,17 @@ async function seed() {
   await dataSource.initialize();
   const queryRunner = dataSource.createQueryRunner();
 
+  const employeeCount = await queryRunner.query(
+    `SELECT COUNT(*) FROM employee`,
+  );
+
+  if (employeeCount[0]['COUNT(*)'] > 0) {
+    console.log('Database is not empty, skipping seed.');
+    await queryRunner.release();
+    await dataSource.destroy();
+    return;
+  }
+
   console.log('🌱 Seeding employees...');
   for (let i = 0; i < 1000; i++) {
     await queryRunner.query(
@@ -30,8 +41,8 @@ async function seed() {
       [
         faker.person.firstName(),
         faker.person.lastName(),
-        faker.date.past({ years: 10 }).toISOString().split('T')[0], // Fecha en formato YYYY-MM-DD
-        faker.number.int({ min: 30000, max: 150000 }), // Salario aleatorio
+        faker.date.past({ years: 10 }).toISOString().split('T')[0],
+        faker.number.int({ min: 30000, max: 150000 }),
       ],
     );
     console.log('🌱 Seeded employee', i + 1);
