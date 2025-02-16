@@ -1,9 +1,8 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { datasourceOptions } from './configuration/orm.configuration';
-import { DataSource } from 'typeorm';
+import { DataSource, DataSourceOptions } from 'typeorm';
+import { EmployeeModule } from './modules/employee/employee.module';
 
 @Module({
   imports: [
@@ -15,12 +14,13 @@ import { DataSource } from 'typeorm';
           timezone: 'UTC',
         },
       }),
-      dataSourceFactory: async () => {
-        return new DataSource(datasourceOptions).initialize();
+      dataSourceFactory: async (options: DataSourceOptions) => {
+        return new DataSource(options).initialize();
       },
     }),
+    EmployeeModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
