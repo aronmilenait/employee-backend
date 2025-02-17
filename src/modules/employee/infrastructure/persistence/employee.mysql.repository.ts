@@ -15,9 +15,7 @@ export class EmployeeRepository implements IEmployeeRepository {
     private readonly employeeRepository: Repository<EmployeeEntity>,
   ) {}
 
-  async getAll(
-    query: IQueryOptions,
-  ): Promise<{
+  async getAll(query: IQueryOptions): Promise<{
     employees: Employee[];
     totalEmployees: number;
     totalPages: number;
@@ -27,6 +25,9 @@ export class EmployeeRepository implements IEmployeeRepository {
     const options: FindManyOptions<EmployeeEntity> = {
       skip: (page - 1) * limit,
       take: limit,
+      order: {
+        last_name: 'ASC',
+      },
     };
 
     const [employees, totalEmployees] =
